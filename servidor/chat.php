@@ -73,7 +73,7 @@ class Chat implements MessageComponentInterface {
 		
 		foreach ($this->clientes as $cliente) {
 			if (($todos || $para === $cliente->atrNome()) && $cliente !== $cliente_de) {
-				$cliente->enviarMensagem($cliente_de->atrNome(), $mensagem);
+				$cliente->enviarMensagem($cliente_de->atrNome(), $mensagem, !$todos);
 			}
 		}
 	}

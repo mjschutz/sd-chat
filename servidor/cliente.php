@@ -22,8 +22,8 @@ class Cliente {
 		return $this->conexao === $conexao;
 	}
 	
-	public function enviarMensagem($de, $mensagem) {
-		$this->conexao->send(json_encode(array('tipo' => 'mensagem', 'de' => $de, 'mensagem' => $mensagem)));
+	public function enviarMensagem($de, $mensagem, $privada = false) {
+		$this->conexao->send(json_encode(array('tipo' => 'mensagem', 'de' => $de, 'mensagem' => $mensagem, 'privada' => $privada)));
 	}
 	
 	public function entrou($nome) {
