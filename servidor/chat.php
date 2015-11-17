@@ -66,11 +66,11 @@ class Chat implements MessageComponentInterface {
 	}
 	
 	public function enviarMensagem($cliente_de, $para, $mensagem) {
-		$para = strtolower($msg_json->para);
+		$para = strtolower($para);
 		$todos = $para == 'todos';
 		
 		foreach ($this->clientes as $cliente) {
-			if (($todos || $para === $cliente->atrNome()) && $cliente !== $cliente_de) {
+			if (($todos || $para === strtolower($cliente->atrNome())) && $cliente !== $cliente_de) {
 				$cliente->enviarMensagem($cliente_de->atrNome(), $mensagem, !$todos);
 			}
 		}
