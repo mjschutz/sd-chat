@@ -85,7 +85,7 @@ class Chat implements MessageComponentInterface {
 	public function entrou($cliente_entrou) {	
 		foreach ($this->clientes as $cliente) {
 			if (!$cliente->ehEstaConexao($cliente_entrou)) {
-				$cliente->enviarNome($cliente_entrou->atrNome());
+				$cliente->entrou($cliente_entrou->atrNome());
 			}
 		}
 	}
@@ -93,7 +93,15 @@ class Chat implements MessageComponentInterface {
 	public function saiu($cliente_saiu) {
 		foreach ($this->clientes as $cliente) {
 			if (!$cliente->ehEstaConexao($cliente_saiu)) {
-				$cliente->removerNome($cliente_saiu->atrNome());
+				$cliente->saiu($cliente_saiu->atrNome());
+			}
+		}
+	}
+	
+	public function mudou($cliente_mudou, $nome_novo) {
+		foreach ($this->clientes as $cliente) {
+			if (!$cliente->ehEstaConexao($cliente_mudou)) {
+				$cliente->mudou($cliente_mudou->atrNome(), $nome_novo);
 			}
 		}
 	}

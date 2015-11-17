@@ -27,19 +27,22 @@ class Cliente {
 		$this->conexao->send(json_encode(array('tipo' => 'mensagem', 'de' => $de, 'mensagem' => $mensagem)));
 	}
 	
-	public function enviarNome($nome) {
-		$this->conexao->send(json_encode(array('tipo' => 'nome', 'nome' => $nome)));
+	public function entrou($nome) {
+		$this->conexao->send(json_encode(array('tipo' => 'entrou', 'nome' => $nome)));
 	}
 	
-	public function removerNome($nome) {
-		$this->conexao->send(json_encode(array('tipo' => 'rem-nome', 'nome' => $nome)));
+	public function saiu($nome) {
+		$this->conexao->send(json_encode(array('tipo' => 'saiu', 'nome' => $nome)));
+	}
+	
+	public function mudou($nome_velho, $nome_novo) {
+		$this->conexao->send(json_encode(array('tipo' => 'mudou', 'nome-velho' => $nome_velho, 'nome-novo' => $nome_novo)));
 	}
 	
 	public function atrNome($nome = '') {
 		if (!empty($nome)){
-			$this->chat_instancia->saiu($this); // mudar para renomear?
+			$this->chat_instancia->mudou($this, $nome);
 			$this->nome = $nome;
-			$this->chat_instancia->entrou($this);
 		}
 
 		return $this->nome;
