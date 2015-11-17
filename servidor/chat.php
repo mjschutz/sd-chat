@@ -21,27 +21,25 @@ class Chat implements MessageComponentInterface {
 		$msg_json = json_decode($msg);
 		$cliente = $this->clientePorConexao($de);
 
-        foreach ($this->clientes as $cliente) {
-			switch (strtolower($msg_json->tipo)) {
-				case 'mensagem':
-					if (!isset($msg_json->para)) {
-						$msg_json->para = 'todos';
-					}
-					
-					$this->enviarMensagem($cliente, $msg_json->para, $msg_json->mensagem);
-				break;
+		switch (strtolower($msg_json->tipo)) {
+			case 'mensagem':
+				if (!isset($msg_json->para)) {
+					$msg_json->para = 'todos';
+				}
 				
-				case 'info':				
-					if (isset($msg_json->nome)) {
-						$cliente->atrNome($msg_json->nome);
-					}
-				break;
-				
-				case 'lista':
-					$this->listarClientes($cliente);
-				break;
-            }
-        }
+				$this->enviarMensagem($cliente, $msg_json->para, $msg_json->mensagem);
+			break;
+			
+			case 'info':				
+				if (isset($msg_json->nome)) {
+					$cliente->atrNome($msg_json->nome);
+				}
+			break;
+			
+			case 'lista':
+				$this->listarClientes($cliente);
+			break;
+		}
     }
 
     public function onClose(ConnectionInterface $conexao) {
