@@ -27,12 +27,12 @@ class Chat implements MessageComponentInterface {
 					$msg_json->para = 'todos';
 				}
 				
-				$this->enviarMensagem($cliente, $msg_json->para, $msg_json->mensagem);
+				$this->enviarMensagem($cliente, $msg_json->para, strip_tags($msg_json->mensagem));
 			break;
 			
 			case 'info':				
 				if (isset($msg_json->nome)) {
-					$cliente->atrNome($msg_json->nome);
+					$cliente->atrNome(strip_tags($msg_json->nome));
 				}
 			break;
 			
@@ -71,7 +71,7 @@ class Chat implements MessageComponentInterface {
 		
 		foreach ($this->clientes as $cliente) {
 			if (($todos || $para === strtolower($cliente->atrNome())) && $cliente !== $cliente_de) {
-				$cliente->enviarMensagem($cliente_de->atrNome(), $mensagem, !$todos);
+				$cliente->enviarMensagem($cliente_de->atrNome(), strip_tags($mensagem), !$todos);
 			}
 		}
 	}
