@@ -6,6 +6,8 @@ class Cliente {
 	protected $conexao;
 	protected $chat_instancia;
 	protected $nome = '';
+	protected $mensagem_anterior = '';
+	protected $contagem_mensagem = 0;
 	
 	public function __construct(&$chat_instancia, &$conexao, $nome = '') {
         $this->conexao = &$conexao;
@@ -24,6 +26,19 @@ class Cliente {
 	}
 	
 	public function enviarMensagem($de, $mensagem, $privada = false) {
+		if ($this->mensagem_anterior === $mensagem) {
+			$this->mensagem_contagem++;
+			
+			if ($this->mensagem_contagem > 5)
+			{
+				$this->saiu($de);
+				$this->chat_instancia->onClose($this->conexao);
+				$this->conexao->close();
+			}
+		} else {
+			$this->mensagem_contagem = 0;
+			$this->mensagem_anterior = $mensagem;
+		}
 		$this->conexao->send(json_encode(array('tipo' => 'mensagem', 'de' => $de, 'mensagem' => $mensagem, 'privada' => $privada)));
 	}
 	
