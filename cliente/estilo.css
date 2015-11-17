@@ -57,6 +57,18 @@ body * {
 	background: #9bff52;
 }
 
+#tela-usuarios input {
+	width: 100%;
+	height: 100%;
+	border: 0;
+	padding: 0;
+	margin: 0;
+}
+
+#tela-usuarios a.eu {
+	background: #97deff !important;
+}
+
 #barra-conversa {
 	width: 100%;
 	height: 10%;
