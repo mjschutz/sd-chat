@@ -6,5 +6,13 @@ $vendorDir = dirname(__DIR__);
 $baseDir = dirname($vendorDir);
 
 return array(
-    'Ratchet' => $baseDir . '/Ratchet/',
+    'Ratchet' => $baseDir,
+	'React\EventLoop' => $baseDir,
+	'React\Socket' => $baseDir,
+	'React\Stream' => $baseDir,
+	'Symfony\Components\EventDispatcher' => $baseDir,
+	'Symfony\Components\HttpFoundation' => $baseDir,
+	'Symfony\Components\Routing' => $baseDir,
+	'Guzzle' => $baseDir,
+	'Evenement' => $baseDir
 );

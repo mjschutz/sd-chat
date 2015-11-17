@@ -47,7 +47,3 @@ function Chat () {
 }
 
 var chat = new Chat();
-var usuario = chat.novoUsuario('Eu aqui');
-usuario.mensagemPara('Usuário 1', 'E ae');
-usuario.mensagemParaTodos('E ae galera');
-usuario.sair();
