@@ -23,6 +23,7 @@ body * {
 #tela-chat {
 	width: 80%;
 	float: left;
+	overflow-y: auto;
 }
 
 #tela-chat span, #tela-usuarios a {
@@ -37,6 +38,7 @@ body * {
 	width: 20%;
 	float: right;
 	border-left: 1px solid black;
+	overflow-y: auto;
 }
 
 #tela-usuarios a {
