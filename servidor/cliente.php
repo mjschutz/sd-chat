@@ -7,11 +7,11 @@ class Cliente {
 	protected $chat_instancia;
 	protected $nome = '';
 	
-	public function __construct($chat_instancia, $conexao, $nome = '') {
-        $this->conexao = $conexao;
-		$this->chat_instancia = $chat_instancia;
+	public function __construct(&$chat_instancia, &$conexao, $nome = '') {
+        $this->conexao = &$conexao;
+		$this->chat_instancia = &$chat_instancia;
 		$this->nome = $nome;
-		$this->chat_instancia->entrou($this);
+		$this->entrou($nome);
     }
 	
 	public function __destruct() {

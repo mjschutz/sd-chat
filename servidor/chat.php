@@ -16,12 +16,12 @@ class Chat implements MessageComponentInterface {
     public function onOpen(ConnectionInterface $conexao) {
         $this->clientes->attach(new Cliente($this, $conexao, 'Usuário ' . $conexao->resourceId));
 
-        echo "New connection! ({$conexao->resourceId})\n";
+        echo "Nova conexao! ({$conexao->resourceId})\n";
     }
 
     public function onMessage(ConnectionInterface $de, $msg) {
         $numRecv = count($this->clientes) - 1;
-        echo sprintf('Connection %d sending message "%s" to %d other connection%s' . "\n"
+        echo sprintf('Conexao %d enviando mensagem "%s" para %d outros cliente%s' . "\n"
             , $de->resourceId, $msg, $numRecv, $numRecv == 1 ? '' : 's');
 
 		$msg_json = json_decode($msg);
@@ -34,7 +34,7 @@ class Chat implements MessageComponentInterface {
 						$msg_json->para = 'todos';
 					}
 					
-					$this->enviarMensagem($cliente->atrNome(), $msg_json->para, $msg_json->mensagem);
+					$this->enviarMensagem($cliente, $msg_json->para, $msg_json->mensagem);
 				break;
 				
 				case 'info':				
@@ -53,11 +53,11 @@ class Chat implements MessageComponentInterface {
 			}
 		}
 
-        echo "Connection {$conexao->resourceId} has disconnected\n";
+        echo "Conexão {$conexao->resourceId} foi desconectada\n";
     }
 
     public function onError(ConnectionInterface $conexao, \Exception $erro) {
-        echo "An error has occurred: {$erro->getMessage()}\n";
+        echo "Um erro ocorreu:: {$erro->getMessage()}\n";
 		$this->onClose($conexao);
     }
 	
@@ -71,20 +71,20 @@ class Chat implements MessageComponentInterface {
 		return FALSE;
 	}
 	
-	public function enviarMensagem($de, $para, $mensagem) {
+	public function enviarMensagem($cliente_de, $para, $mensagem) {
 		$para = strtolower($msg_json->para);
 		$todos = $para == 'todos';
 		
 		foreach ($this->clientes as $cliente) {
-			if (($todos || $para === $cliente->atrNome()) && !$cliente->ehEstaConexao($de)) {
-				$cliente->enviarMensagem($de, $mensagem);
+			if (($todos || $para === $cliente->atrNome()) && $cliente !== $cliente_de) {
+				$cliente->enviarMensagem($cliente_de->atrNome(), $mensagem);
 			}
 		}
 	}
 	
 	public function entrou($cliente_entrou) {	
 		foreach ($this->clientes as $cliente) {
-			if (!$cliente->ehEstaConexao($cliente_entrou)) {
+			if ($cliente !== $cliente_entrou) {
 				$cliente->entrou($cliente_entrou->atrNome());
 			}
 		}
@@ -92,7 +92,7 @@ class Chat implements MessageComponentInterface {
 	
 	public function saiu($cliente_saiu) {
 		foreach ($this->clientes as $cliente) {
-			if (!$cliente->ehEstaConexao($cliente_saiu)) {
+			if ($cliente !== $cliente_saiu) {
 				$cliente->saiu($cliente_saiu->atrNome());
 			}
 		}
@@ -100,7 +100,7 @@ class Chat implements MessageComponentInterface {
 	
 	public function mudou($cliente_mudou, $nome_novo) {
 		foreach ($this->clientes as $cliente) {
-			if (!$cliente->ehEstaConexao($cliente_mudou)) {
+			if ($cliente !== $cliente_mudou) {
 				$cliente->mudou($cliente_mudou->atrNome(), $nome_novo);
 			}
 		}
