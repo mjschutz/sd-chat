@@ -15,15 +15,9 @@ class Chat implements MessageComponentInterface {
 
     public function onOpen(ConnectionInterface $conexao) {
         $this->clientes->attach(new Cliente($this, $conexao, 'Usuário ' . $conexao->resourceId));
-
-        echo "Nova conexao! ({$conexao->resourceId})\n";
     }
 
     public function onMessage(ConnectionInterface $de, $msg) {
-        $numRecv = count($this->clientes) - 1;
-        echo sprintf('Conexao %d enviando mensagem "%s" para %d outros cliente%s' . "\n"
-            , $de->resourceId, $msg, $numRecv, $numRecv == 1 ? '' : 's');
-
 		$msg_json = json_decode($msg);
 		$cliente = $this->clientePorConexao($de);
 
@@ -44,7 +38,7 @@ class Chat implements MessageComponentInterface {
 				break;
 				
 				case 'lista':
-					$this->listarClientes();
+					$this->listarClientes($cliente);
 				break;
             }
         }
@@ -56,18 +50,16 @@ class Chat implements MessageComponentInterface {
 				$this->clientes->detach($cliente);
 			}
 		}
-
-        echo "Conexão {$conexao->resourceId} foi desconectada\n";
     }
 
     public function onError(ConnectionInterface $conexao, \Exception $erro) {
-        echo "Um erro ocorreu:: {$erro->getMessage()}\n";
+        echo "Um erro ocorreu: {$erro->getMessage()}\n"; // Deixar esse debug em caso de dúvida
 		$this->onClose($conexao);
     }
 	
 	private function clientePorConexao($conexao) {
 		foreach ($this->clientes as $cliente) {
-			if ($cliente->ehEstaConexao($de)) {
+			if ($cliente->ehEstaConexao($conexao)) {
 				return $cliente;
 			}
 		}
@@ -110,12 +102,15 @@ class Chat implements MessageComponentInterface {
 		}
 	}
 	
-	public function listarClientes()
+	public function listarClientes($cliente_para)
 	{
 		$nomes = array();
 		foreach ($this->clientes as $cliente) {
-			$nomes[] = $cliente->atrNome();
+			if ($cliente !== $cliente_para)
+				$nomes[] = $cliente->atrNome();
 		}
+		
+		$cliente_para->listaNomes($nomes);
 	}
 }
 	
