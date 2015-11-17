@@ -47,3 +47,10 @@ function Chat () {
 }
 
 var chat = new Chat();
+
+var ws = $.WebSocket ('ws://webserver.local:8080');
+
+// WebSocket onerror event triggered also in fallback
+ws.onerror = function (e) {
+    console.log ('Error with WebSocket uid: ' + e.target.uid);                                                                                              
+}; 

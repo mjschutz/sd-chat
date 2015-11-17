@@ -14,7 +14,7 @@ class Chat implements MessageComponentInterface {
     }
 
     public function onOpen(ConnectionInterface $conexao) {
-        $this->clientes->attach(new Cliente($this, $conexao));
+        $this->clientes->attach(new Cliente($this, $conexao, 'Usuário ' . $conexao->resourceId));
 
         echo "New connection! ({$conexao->resourceId})\n";
     }
@@ -24,9 +24,24 @@ class Chat implements MessageComponentInterface {
         echo sprintf('Connection %d sending message "%s" to %d other connection%s' . "\n"
             , $de->resourceId, $msg, $numRecv, $numRecv == 1 ? '' : 's');
 
+		$msg_json = json_decode($msg);
+		$cliente = $this->clientePorConexao($de);
+
         foreach ($this->clientes as $cliente) {
-            if (!$cliente->ehEstaConexao($de)) {
-                $cliente->enviarMensagem($msg);
+			switch (strtolower($msg_json->tipo)) {
+				case 'mensagem':
+					if (!isset($msg_json->para)) {
+						$msg_json->para = 'todos';
+					}
+					
+					$this->enviarMensagem($cliente->atrNome(), $msg_json->para, $msg_json->mensagem);
+				break;
+				
+				case 'info':				
+					if (isset($msg_json->nome)) {
+						$cliente->atrNome($msg_json->nome);
+					}
+				break;
             }
         }
     }
@@ -45,6 +60,43 @@ class Chat implements MessageComponentInterface {
         echo "An error has occurred: {$erro->getMessage()}\n";
 		$this->onClose($conexao);
     }
+	
+	private function clientePorConexao($conexao) {
+		foreach ($this->clientes as $cliente) {
+			if ($cliente->ehEstaConexao($de)) {
+				return $cliente;
+			}
+		}
+		
+		return FALSE;
+	}
+	
+	public function enviarMensagem($de, $para, $mensagem) {
+		$para = strtolower($msg_json->para);
+		$todos = $para == 'todos';
+		
+		foreach ($this->clientes as $cliente) {
+			if (($todos || $para === $cliente->atrNome()) && !$cliente->ehEstaConexao($de)) {
+				$cliente->enviarMensagem($de, $mensagem);
+			}
+		}
+	}
+	
+	public function entrou($cliente_entrou) {	
+		foreach ($this->clientes as $cliente) {
+			if (!$cliente->ehEstaConexao($cliente_entrou)) {
+				$cliente->enviarNome($cliente_entrou->atrNome());
+			}
+		}
+	}
+	
+	public function saiu($cliente_saiu) {
+		foreach ($this->clientes as $cliente) {
+			if (!$cliente->ehEstaConexao($cliente_saiu)) {
+				$cliente->removerNome($cliente_saiu->atrNome());
+			}
+		}
+	}
 }
 	
 ?>
