@@ -11,7 +11,6 @@ class Cliente {
         $this->conexao = &$conexao;
 		$this->chat_instancia = &$chat_instancia;
 		$this->nome = $nome;
-		$this->entrou($nome);
     }
 	
 	public function __destruct() {
@@ -37,6 +36,10 @@ class Cliente {
 	
 	public function mudou($nome_velho, $nome_novo) {
 		$this->conexao->send(json_encode(array('tipo' => 'mudou', 'nome-velho' => $nome_velho, 'nome-novo' => $nome_novo)));
+	}
+	
+	public function listaNomes($nomes) {
+		$this->conexao->send(json_encode(array('tipo' => 'lista', 'nomes' => $nomes, 'eu' => $this->nome)));
 	}
 	
 	public function atrNome($nome = '') {

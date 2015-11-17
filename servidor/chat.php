@@ -42,6 +42,10 @@ class Chat implements MessageComponentInterface {
 						$cliente->atrNome($msg_json->nome);
 					}
 				break;
+				
+				case 'lista':
+					$this->listarClientes();
+				break;
             }
         }
     }
@@ -103,6 +107,14 @@ class Chat implements MessageComponentInterface {
 			if ($cliente !== $cliente_mudou) {
 				$cliente->mudou($cliente_mudou->atrNome(), $nome_novo);
 			}
+		}
+	}
+	
+	public function listarClientes()
+	{
+		$nomes = array();
+		foreach ($this->clientes as $cliente) {
+			$nomes[] = $cliente->atrNome();
 		}
 	}
 }
