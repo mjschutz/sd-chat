@@ -25,11 +25,11 @@ class Cliente {
 		return $this->conexao === $conexao;
 	}
 	
-	public function checarRepeticao($msg, $total = 5) {
+	public function checarRepeticao($mensagem, $total = 5) {
 		if ($this->mensagem_anterior === $mensagem) {
 			$this->mensagem_contagem++;
 			
-			if ($this->mensagem_contagem > $total) {
+			if ($this->mensagem_contagem >= $total) {
 				$this->chat_instancia->onClose($this->conexao);
 				return true;
 			}
