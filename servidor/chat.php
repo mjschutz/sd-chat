@@ -69,11 +69,11 @@ class Chat implements MessageComponentInterface {
 		$para = strtolower($para);
 		$todos = $para == 'todos';
 		
-		if ($this->checarRepeticao(sha1($mensagem))) {
-			$cliente_de->enviarMensagem($cliente_de->atrNome(), "You lose", !$todos);
-			$cliente_de->saiu($cliente_de->atrNome());
-			return;
-		}
+                if ($cliente_de->checarRepeticao(sha1($mensagem))) {
+                        $cliente_de->enviarMensagem('Chat', 'abuso no envio das mensagens', !$todos);
+                        $cliente_de->saiu($cliente_de->atrNome());
+                        return;
+                }
 		
 		foreach ($this->clientes as $cliente) {
 			if (($todos || $para === strtolower($cliente->atrNome())) && $cliente !== $cliente_de) {
