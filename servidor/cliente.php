@@ -25,20 +25,23 @@ class Cliente {
 		return $this->conexao === $conexao;
 	}
 	
-	public function enviarMensagem($de, $mensagem, $privada = false) {
+	public function checarRepeticao($msg, $total = 5) {
 		if ($this->mensagem_anterior === $mensagem) {
 			$this->mensagem_contagem++;
 			
-			if ($this->mensagem_contagem > 5)
-			{
-				$this->saiu($de);
+			if ($this->mensagem_contagem > $total) {
 				$this->chat_instancia->onClose($this->conexao);
-				$this->conexao->close();
+				return true;
 			}
 		} else {
 			$this->mensagem_contagem = 0;
 			$this->mensagem_anterior = $mensagem;
 		}
+		
+		return false;
+	}
+	
+	public function enviarMensagem($de, $mensagem, $privada = false) {
 		$this->conexao->send(json_encode(array('tipo' => 'mensagem', 'de' => $de, 'mensagem' => $mensagem, 'privada' => $privada)));
 	}
 	
