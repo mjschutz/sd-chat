@@ -7,7 +7,8 @@ class Cliente {
 	protected $chat_instancia;
 	protected $nome = '';
 	protected $mensagem_anterior = '';
-	protected $contagem_mensagem = 0;
+	protected $mensagem_contagem = 0;
+	protected $mensagem_tempo = 0;
 	
 	public function __construct(&$chat_instancia, &$conexao, $nome = '') {
         $this->conexao = &$conexao;
@@ -26,6 +27,14 @@ class Cliente {
 	}
 	
 	public function checarRepeticao($mensagem, $total = 5) {
+               $tempo = round(microtime(true) * 1000);
+                if (($tempo - $this->mensagem_tempo) < 500)
+                {
+                        $this->chat_instancia->onClose($this->conexao);
+                        return true;
+                }
+
+                $this->mensagem_tempo = $tempo;
 		if ($this->mensagem_anterior === $mensagem) {
 			$this->mensagem_contagem++;
 			
